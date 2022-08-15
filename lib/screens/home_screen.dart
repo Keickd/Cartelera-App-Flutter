@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:peliculas_app/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cartelera'),
+        title: const Text('Cartelera'),
         elevation: 0,
         centerTitle: true,
         actions: [
@@ -14,12 +16,17 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: Container(
-          child: Column(
+          child: SingleChildScrollView(
+              child: Column(
         children: [
-          CardSwiper()
+          //Tarjetas principales
+          CardSwiper(),
+
+          //Slider de peliculas
+          const MovieSlider()
           //Listado horizontal de peliculas
         ],
-      )),
+      ))),
     );
   }
 }
