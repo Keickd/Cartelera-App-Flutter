@@ -1,29 +1,37 @@
 import 'package:flutter/material.dart';
 
+import '../models/models.dart';
+
 class MovieSlider extends StatelessWidget {
-  const MovieSlider({Key? key}) : super(key: key);
+  MovieSlider({Key? key, this.title, required this.movies}) : super(key: key);
+
+  List<Movie> movies = [];
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 260,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              'Populares',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                title!,
+                style: const TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.normal),
+              ),
             ),
-          ),
           const SizedBox(height: 5),
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) => _MoviePoster(),
-              itemCount: 20,
+              itemBuilder: (context, index) =>
+                  _MoviePoster(movie: movies[index]),
+              itemCount: movies.length,
             ),
           )
         ],
@@ -33,6 +41,10 @@ class MovieSlider extends StatelessWidget {
 }
 
 class _MoviePoster extends StatelessWidget {
+  final Movie movie;
+
+  const _MoviePoster({super.key, required this.movie});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,10 +58,10 @@ class _MoviePoster extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: FadeInImage(
-                placeholder: AssetImage('assets/no-image.jpg'),
-                image: NetworkImage('https://via.placeholder.com/300x400'),
+                placeholder: const AssetImage('assets/no-image.jpg'),
+                image: NetworkImage(movie.getFullPosterImg()),
                 imageErrorBuilder: (context, error, stackTrace) {
-                  return Text('error loading movie slider');
+                  return const Text('error loading movie slider');
                 },
                 width: 130,
                 height: 190,

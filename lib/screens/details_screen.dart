@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:peliculas_app/widgets/widgets.dart';
 
 class DetailsScreen extends StatelessWidget {
+  const DetailsScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     //Todo : cambiar por instancia de movie
@@ -19,7 +21,7 @@ class DetailsScreen extends StatelessWidget {
           _Overview(),
           _Overview(),
           _Overview(),
-          CastingCards()
+          const CastingCards()
         ]))
       ],
     ));
