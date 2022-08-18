@@ -16,6 +16,7 @@ class CardSwiper extends StatelessWidget {
       width: double.infinity,
       height: size.height * 0.5,
       child: Swiper(
+        index: 0,
         itemCount: movies.length,
         layout: SwiperLayout.STACK,
         itemWidth: size.width * 0.6,
@@ -29,6 +30,9 @@ class CardSwiper extends StatelessWidget {
               child: FadeInImage(
                 placeholder: const AssetImage('assets/no-image.jpg'),
                 image: NetworkImage(movies[index].getFullPosterImg()),
+                imageErrorBuilder: (context, error, stackTrace) {
+                  return const Text('error loading image');
+                },
                 fit: BoxFit.cover,
               ),
             ),

@@ -45,9 +45,12 @@ class _MoviePoster extends StatelessWidget {
             onTap: () => Navigator.pushNamed(context, 'details'),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: const FadeInImage(
+              child: FadeInImage(
                 placeholder: AssetImage('assets/no-image.jpg'),
                 image: NetworkImage('https://via.placeholder.com/300x400'),
+                imageErrorBuilder: (context, error, stackTrace) {
+                  return Text('error loading movie slider');
+                },
                 width: 130,
                 height: 190,
                 fit: BoxFit.cover,
