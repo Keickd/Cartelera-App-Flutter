@@ -34,12 +34,12 @@ class CardSwiper extends StatelessWidget {
         itemBuilder: (BuildContext _, index) {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, 'details',
-                arguments: 'movie-instance'),
+                arguments: movies[index]),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: FadeInImage(
                 placeholder: const AssetImage('assets/no-image.jpg'),
-                image: NetworkImage(movies[index].getFullPosterImg()),
+                image: NetworkImage(movies[index].FullPosterImg),
                 imageErrorBuilder: (context, error, stackTrace) {
                   return const Text('error loading image');
                 },
