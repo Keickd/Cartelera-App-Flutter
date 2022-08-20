@@ -16,8 +16,8 @@ class CastingCards extends StatelessWidget {
         if (!snapshot.hasData) {
           return Container(
             height: 180,
-            constraints: BoxConstraints(maxWidth: 150),
-            child: CupertinoActivityIndicator(),
+            constraints: const BoxConstraints(maxWidth: 150),
+            child: const CupertinoActivityIndicator(),
           );
         }
         final List<Cast> cast = snapshot.data!;
@@ -40,7 +40,7 @@ class CastingCards extends StatelessWidget {
 class _CastCard extends StatelessWidget {
   final Cast cast;
 
-  const _CastCard({super.key, required this.cast});
+  const _CastCard({required this.cast});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _CastCard extends StatelessWidget {
                 height: 140,
                 width: 100,
                 fit: BoxFit.cover,
-                placeholder: AssetImage('assets/no-image.jpg'),
+                placeholder: const AssetImage('assets/no-image.jpg'),
                 image: NetworkImage(cast.fullProfilePath),
               )),
           const SizedBox(height: 5),

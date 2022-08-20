@@ -12,7 +12,10 @@ class MovieSearchDelegate extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-        onPressed: () => query = '',
+        onPressed: () {
+          query = '';
+          FocusScope.of(context).unfocus();
+        },
         icon: const Icon(
           Icons.clear,
         ),
@@ -26,23 +29,21 @@ class MovieSearchDelegate extends SearchDelegate {
       onPressed: () {
         close(context, null);
       },
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    return Text('buildResults');
+    return const Text('buildResults');
   }
 
   Widget _emptyContainer() {
-    return Container(
-      child: const Center(
-        child: Icon(
-          Icons.movie_creation_outlined,
-          color: Colors.black38,
-          size: 130,
-        ),
+    return const Center(
+      child: Icon(
+        Icons.movie_creation_outlined,
+        color: Colors.black38,
+        size: 130,
       ),
     );
   }
@@ -54,18 +55,23 @@ class MovieSearchDelegate extends SearchDelegate {
     }
 
     final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
+    moviesProvider.getSuggestionsByQuery(query);
 
-    return FutureBuilder(
+    return StreamBuilder(
       builder: (_, AsyncSnapshot<List<Movie>> snapshot) {
         if (!snapshot.hasData) return _emptyContainer();
+        List<Movie> movies = moviesProvider.searchedMovies;
+        if (movies.isEmpty) {
+          movies = snapshot.data!;
+        }
 
-        final movies = snapshot.data!;
+        //final movies = snapshot.data!;
         return ListView.builder(
           itemBuilder: (_, index) => _MovieItem(movie: movies[index]),
           itemCount: movies.length,
         );
       },
-      future: moviesProvider.searchMovies(query),
+      stream: moviesProvider.suggestionsStream,
     );
   }
 }
@@ -73,7 +79,7 @@ class MovieSearchDelegate extends SearchDelegate {
 class _MovieItem extends StatelessWidget {
   final Movie movie;
 
-  const _MovieItem({super.key, required this.movie});
+  const _MovieItem({required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +98,7 @@ class _MovieItem extends StatelessWidget {
       subtitle: Text(movie.originalTitle),
       onTap: () {
         Navigator.pushNamed(context, 'details', arguments: movie);
+        FocusScope.of(context).unfocus();
       },
     );
   }

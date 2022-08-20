@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
+// ignore: must_be_immutable
 class MovieSlider extends StatefulWidget {
   MovieSlider(
       {Key? key, this.title, required this.movies, required this.onNextPage})
@@ -16,14 +17,14 @@ class MovieSlider extends StatefulWidget {
 }
 
 class _MovieSliderState extends State<MovieSlider> {
-  final ScrollController scrollController = new ScrollController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent - 500) ;
+          scrollController.position.maxScrollExtent - 500) {}
       widget.onNextPage();
     });
   }
@@ -57,7 +58,7 @@ class _MovieSliderState extends State<MovieSlider> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => _MoviePoster(
                   movie: widget.movies[index],
-                  '${widget.title}-${index}-${widget.movies[index].id}'),
+                  '${widget.title}-$index-${widget.movies[index].id}'),
               itemCount: widget.movies.length,
             ),
           )
@@ -71,7 +72,7 @@ class _MoviePoster extends StatelessWidget {
   final Movie movie;
   final String heroId;
 
-  const _MoviePoster(this.heroId, {super.key, required this.movie});
+  const _MoviePoster(this.heroId, {required this.movie});
 
   @override
   Widget build(BuildContext context) {

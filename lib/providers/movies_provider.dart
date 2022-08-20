@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:peliculas_app/helpers/debouncer.dart';
 import 'package:peliculas_app/models/search_movies_response.dart';
 import '../models/models.dart';
 
@@ -12,10 +14,21 @@ class MoviesProvider extends ChangeNotifier {
 
   List<Movie> onDisplayMovies = [];
   List<Movie> popularMovies = [];
+  List<Movie> searchedMovies = [];
 
   Map<int, List<Cast>> moviesCast = {};
 
   int _popularPage = 0;
+
+  final StreamController<List<Movie>> _suggestionsStreamController =
+      StreamController.broadcast();
+  Stream<List<Movie>> get suggestionsStream =>
+      _suggestionsStreamController.stream;
+
+  final Debouncer debouncer = Debouncer(
+    duration: const Duration(milliseconds: 500),
+    onValue: (value) {},
+  );
 
   MoviesProvider() {
     getOnDisplayMovies();
@@ -25,10 +38,10 @@ class MoviesProvider extends ChangeNotifier {
   Future<String> _getJsonData(String endpoint, [int page = 1]) async {
     final url = Uri.https(_baseUrl, endpoint,
         {'api_key': _apiKey, 'language': _language, 'page': '$page'});
-    final response;
+    final http.Response response;
     try {
       response = await http.get(url);
-    } on SocketException catch (e) {
+    } on SocketException {
       return 'assets/no-image.jpg';
     }
     return response.body;
@@ -73,5 +86,19 @@ class MoviesProvider extends ChangeNotifier {
     final searchResponse = SearchResponse.fromJson(response.body);
 
     return searchResponse.results;
+  }
+
+  void getSuggestionsByQuery(String searchTerm) {
+    debouncer.value = '';
+    debouncer.onValue = ((value) async {
+      final results = await searchMovies(value);
+      _suggestionsStreamController.add(results);
+      searchedMovies = results;
+    });
+    final timer = Timer.periodic(const Duration(milliseconds: 300), (_) {
+      debouncer.value = searchTerm;
+    });
+    Future.delayed(const Duration(milliseconds: 301))
+        .then((_) => timer.cancel());
   }
 }
